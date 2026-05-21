@@ -1,16 +1,8 @@
 {
     "rewrites": [
         {
-            "source": "/api/:path*",
+            "source": "/:path*",
             "destination": "http://13.232.83.99:8080/:path*"
-        },
-        {
-            "source": "/auth/:path*",
-            "destination": "http://13.232.83.99:8080/auth/:path*"
-        },
-        {
-            "source": "/ws/:path*",
-            "destination": "http://13.232.83.99:8080/ws/:path*"
         }
     ]
 }
