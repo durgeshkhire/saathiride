@@ -100,7 +100,7 @@ export default function CreateRide() {
 
   const fetchNominatim = (query: string, setter: (s: any[]) => void) => {
     if (!query || query.length < 3) { setter([]); return; }
-    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=in`, {
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=in&addressdetails=1`, {
       headers: { "Accept-Language": "en" },
     })
       .then((r) => r.json())
@@ -113,12 +113,15 @@ export default function CreateRide() {
     try {
       const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
       const data = await r.json();
+      const city = data.address ? (data.address.city || data.address.town || data.address.village || data.address.suburb || data.address.county || data.address.state_district || "") : "";
       if (mode === "origin") {
         setOriginAddr(data.display_name || "");
         setOriginLat(lat); setOriginLng(lng);
+        if (city) setOriginCity(city);
       } else {
         setDestAddr(data.display_name || "");
         setDestLat(lat); setDestLng(lng);
+        if (city) setDestCity(city);
       }
     } catch { /* silent */ }
   };
@@ -126,12 +129,16 @@ export default function CreateRide() {
   const selectOrigin = (place: any) => {
     const lat = parseFloat(place.lat), lng = parseFloat(place.lon);
     setOriginAddr(place.display_name); setOriginLat(lat); setOriginLng(lng);
+    const city = place.address ? (place.address.city || place.address.town || place.address.village || place.address.suburb || place.address.county || place.address.state_district || "") : "";
+    if (city) setOriginCity(city);
     setFlyTarget([lat, lng]); setOriginSuggestions([]); setShowOriginDrop(false);
   };
 
   const selectDest = (place: any) => {
     const lat = parseFloat(place.lat), lng = parseFloat(place.lon);
     setDestAddr(place.display_name); setDestLat(lat); setDestLng(lng);
+    const city = place.address ? (place.address.city || place.address.town || place.address.village || place.address.suburb || place.address.county || place.address.state_district || "") : "";
+    if (city) setDestCity(city);
     setFlyTarget([lat, lng]); setDestSuggestions([]); setShowDestDrop(false);
   };
 
@@ -256,7 +263,12 @@ export default function CreateRide() {
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">Origin City</label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-                      <input value={originCity} readOnly className={`${inputCls} pl-9 font-bold cursor-default`} />
+                      <input
+                        value={originCity}
+                        onChange={(e) => setOriginCity(e.target.value)}
+                        placeholder="Enter origin city"
+                        className={`${inputCls} pl-9 font-bold`}
+                      />
                     </div>
                   </div>
                   <div className="hidden md:block pb-0.5">
@@ -268,7 +280,12 @@ export default function CreateRide() {
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">Destination City</label>
                     <div className="relative">
                       <MapPinned className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-                      <input value={destCity} readOnly className={`${inputCls} pl-9 font-bold cursor-default`} />
+                      <input
+                        value={destCity}
+                        onChange={(e) => setDestCity(e.target.value)}
+                        placeholder="Enter destination city"
+                        className={`${inputCls} pl-9 font-bold`}
+                      />
                     </div>
                   </div>
                 </div>
