@@ -10,9 +10,6 @@ import {
   Shield,
   Users,
   Zap,
-  TrendingUp,
-  Globe,
-  Star,
 } from "lucide-react";
 
 const HEADLINES = [
@@ -80,11 +77,6 @@ export default function HomePage() {
     },
   ];
 
-  const stats = [
-    { value: "50K+", label: "Active Riders", icon: TrendingUp },
-    { value: "120+", label: "Cities", icon: Globe },
-    { value: "4.8", label: "Avg Rating", icon: Star },
-  ];
 
   return (
     <div className="relative">
@@ -156,20 +148,6 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Stats row */}
-            <div className="flex items-center justify-center lg:justify-start gap-6 pt-4">
-              {stats.map(({ value, label, icon: Icon }) => (
-                <div key={label} className="flex items-center gap-2">
-                  <div className="size-9 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                    <Icon className="size-4 text-primary-light" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-white leading-none">{value}</p>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{label}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Right: Cars Illustration */}
@@ -215,7 +193,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-500 uppercase">Community</p>
-                    <p className="text-xs font-bold text-white">50K+ Riders</p>
+                    <p className="text-xs font-bold text-white">10+ Riders</p>
                   </div>
                 </div>
               </div>
