@@ -322,7 +322,14 @@ export default function RideDetailsPage() {
                 </div>
               ) : (
                 <Button
-                  onClick={() => navigate(`/rides/book/${id}`)}
+                  onClick={() => {
+                    const token = localStorage.getItem("token");
+                    if (token) {
+                      navigate(`/rides/book/${id}`);
+                    } else {
+                      navigate("/auth/login");
+                    }
+                  }}
                   fullWidth
                   size="lg"
                   className="hover:scale-[1.02]"
@@ -340,9 +347,7 @@ export default function RideDetailsPage() {
                   <MapPin className="size-5 mr-2" /> Track Ride
                 </Button>
               )}
-              <p className="text-[10px] text-center text-slate-600 uppercase font-bold tracking-widest mt-2">
-                Free Cancellation before 2 hours
-              </p>
+
             </div>
           </div>
 

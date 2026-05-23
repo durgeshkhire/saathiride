@@ -27,12 +27,17 @@ export default function RequestBookingPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/auth/login");
+      return;
+    }
     if (!id) return;
     rideApi.getRideById(id)
       .then((res) => setRide(res.data?.data || res.data))
       .catch(() => setError("Could not fetch ride details."))
       .finally(() => setIsLoading(false));
-  }, [id]);
+  }, [id, navigate]);
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();

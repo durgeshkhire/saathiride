@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { rideApi } from "@/api/ride.api";
 import { vehicleApi } from "@/api/vehicle.api";
 import { Vehicle } from "@/types";
@@ -25,21 +25,30 @@ type Step = 1 | 2 | 3;
 
 export default function CreateRide() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchState = location.state as {
+    pickup?: string;
+    drop?: string;
+    date?: string;
+  } | null;
+
   const [step, setStep] = useState<Step>(1);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   // Form state
-  const [originCity, setOriginCity] = useState("Pune");
-  const [destCity, setDestCity] = useState("Mumbai");
+  const [originCity, setOriginCity] = useState(searchState?.pickup || "Pune");
+  const [destCity, setDestCity] = useState(searchState?.drop || "Mumbai");
   const [originAddr, setOriginAddr] = useState("");
   const [destAddr, setDestAddr] = useState("");
   const [originLat, setOriginLat] = useState<number | null>(null);
   const [originLng, setOriginLng] = useState<number | null>(null);
   const [destLat, setDestLat] = useState<number | null>(null);
   const [destLng, setDestLng] = useState<number | null>(null);
-  const [departureTime, setDepartureTime] = useState("");
+  const [departureTime, setDepartureTime] = useState(
+    searchState?.date ? `${searchState.date}T12:00` : ""
+  );
   const [totalSeats, setTotalSeats] = useState(3);
   const [pricePerSeat, setPricePerSeat] = useState(350);
   const [vehicleId, setVehicleId] = useState<number | null>(null);
@@ -78,6 +87,45 @@ export default function CreateRide() {
         .finally(() => setVehiclesLoading(false));
     }
   }, [navigate]);
+
+  // Load coordinates and addresses for prefilled cities from search state
+  useEffect(() => {
+    if (searchState?.pickup) {
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchState.pickup)}&format=json&limit=1&countrycodes=in&addressdetails=1`, {
+        headers: { "Accept-Language": "en" },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.[0]) {
+            const place = data[0];
+            const lat = parseFloat(place.lat);
+            const lng = parseFloat(place.lon);
+            setOriginAddr(place.display_name);
+            setOriginLat(lat);
+            setOriginLng(lng);
+            setFlyTarget([lat, lng]);
+          }
+        })
+        .catch(() => {});
+    }
+    if (searchState?.drop) {
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchState.drop)}&format=json&limit=1&countrycodes=in&addressdetails=1`, {
+        headers: { "Accept-Language": "en" },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.[0]) {
+            const place = data[0];
+            const lat = parseFloat(place.lat);
+            const lng = parseFloat(place.lon);
+            setDestAddr(place.display_name);
+            setDestLat(lat);
+            setDestLng(lng);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [searchState]);
 
   // OSRM route
   useEffect(() => {

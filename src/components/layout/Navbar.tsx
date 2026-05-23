@@ -43,7 +43,7 @@ export default function Navbar() {
   const navLinks = [
     { label: "Book Ride", href: "/" },
     { label: "Create Ride", href: userName ? "/rides/create" : "/auth/login" },
-    { label: "About", href: "#" },
+    { label: "About", href: "/about" },
   ];
 
   const profileMenuItems = [

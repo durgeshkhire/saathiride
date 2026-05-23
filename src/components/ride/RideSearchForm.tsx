@@ -19,8 +19,8 @@ import Spinner from "@/components/common/Spinner";
 
 export default function RideSearchForm() {
   const navigate = useNavigate();
-  const [pickup, setPickup] = useState("Mumbai");
-  const [drop, setDrop] = useState("Pune");
+  const [pickup, setPickup] = useState("");
+  const [drop, setDrop] = useState("");
   const [date, setDate] = useState("");
   const [passengers, setPassengers] = useState(1);
   const [results, setResults] = useState<any[]>([]);
@@ -168,10 +168,41 @@ export default function RideSearchForm() {
       </div>
 
       {/* Error */}
-      {error && !isLoading && (
+      {error && !isLoading && error !== "No rides found for your criteria." && (
         <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm font-medium">
           <AlertCircle className="size-4 shrink-0" />
           {error}
+        </div>
+      )}
+
+      {/* No rides found prompt */}
+      {!isLoading && error === "No rides found for your criteria." && (
+        <div className="mt-8 p-8 glass-card rounded-[2rem] border border-white/[0.08] text-center space-y-5 animate-slide-up relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute -inset-10 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="size-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto text-primary-light relative">
+            <Plus className="size-7" />
+          </div>
+          
+          <div className="space-y-2 relative">
+            <h4 className="text-xl font-display font-bold text-white">No Rides Found</h4>
+            <p className="text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
+              We couldn't find any available rides from <span className="text-primary-light font-semibold">{pickup}</span> to <span className="text-accent font-semibold">{drop}</span> on this date.
+            </p>
+            <p className="text-xs text-slate-500 max-w-xs mx-auto">
+              Be the first to offer a ride on this route and share the journey cost!
+            </p>
+          </div>
+          
+          <div className="relative pt-1">
+            <button
+              onClick={() => navigate("/rides/create", { state: { pickup, drop, date } })}
+              className="px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold rounded-2xl hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20 cursor-pointer"
+            >
+              Create a Ride
+            </button>
+          </div>
         </div>
       )}
 

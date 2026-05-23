@@ -18,6 +18,7 @@ import MyVehicles from "@/pages/vehicles/MyVehicles";
 import AddVehicle from "@/pages/vehicles/AddVehicle";
 import Profile from "@/pages/profile/Profile";
 import TrackRide from "@/pages/rides/TrackRide";
+import AboutPage from "@/pages/AboutPage";
 
 export default function App() {
   return (
@@ -64,6 +65,15 @@ export default function App() {
           element={
             <Layout>
               <SearchRides />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/about"
+          element={
+            <Layout>
+              <AboutPage />
             </Layout>
           }
         />
