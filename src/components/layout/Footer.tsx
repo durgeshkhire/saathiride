@@ -88,8 +88,8 @@ export default function Footer() {
         <div className="mt-16 pt-8 border-t border-white/[0.04] grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             { icon: MapPin, title: "HQ Location", value: "GBB Kothrud, Pune 411038" },
-            { icon: Phone, title: "Call Support", value: "+91 1800-123-SAATHI" },
-            { icon: Mail, title: "Email Us", value: "hello@saathiride.in" },
+            { icon: Phone, title: "Call Support", value: "+91 9403098679" },
+            { icon: Mail, title: "Email Us", value: "khiredurgesh@gmail.com" },
           ].map(({ icon: Icon, title, value }) => (
             <div
               key={title}
